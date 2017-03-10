@@ -9,175 +9,165 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_RANKS 13
-#define NUM_SUITS 4
 #define NUM_CARDS 5
 #define TRUE 1
 #define FALSE 0
 
 typedef int Bool;
 
-int num_in_rank[NUM_RANKS];
-int num_in_suit[NUM_SUITS];
-Bool straight, flush, four, three;
+char card_in_hands[NUM_CARDS][2];
+Bool straight, flush, four, three,full_house;
 int pairs;
 
-void read_cards(void);
-void analyze_hand(void);
 void print_result(void);
 
+void new_function_read_card(void);
+void new_analyze_hand(char cards[NUM_CARDS][2]);
+
 int main(int argc, const char * argv[]) {
-    for (; ; ) {
-        read_cards();
-        analyze_hand();
-        print_result();
+    for (;;) {
+    new_function_read_card();
+    new_analyze_hand(card_in_hands);
+    print_result();
     }
+
     return 0;
 }
 
-void read_cards(void){
-    Bool card_exists[NUM_RANKS][NUM_SUITS];
-    char ch, rank_ch, suit_ch;
-    int rank, suit;
-    Bool bad_card = 0;
-    int cards_read = 0;
-    for (rank = 0; rank < NUM_RANKS; rank ++) {
-        num_in_rank[rank] = 0;
-        for (suit = 0; suit < NUM_SUITS; suit ++) {
-            card_exists[rank][suit] = FALSE;
+Bool rankIsInArray(char str){
+    Bool contain = 0;
+    char array[] = {'2','3','4','5','6','7','8','9','t','j','q','k','a','T','J','Q','K','A',};
+    
+    for (int i = 0; i < sizeof(array); i ++) {
+        if (str == array[i]) {
+            contain = TRUE;
         }
     }
+    return contain;
+}
+
+Bool suitIsInArray(char str){
+    Bool contain = 0;
+    char array[] = {'c','d','h','s','C','D','H','S'};
     
-    for (suit = 0; suit < NUM_SUITS; suit ++) {
-        num_in_suit[suit] = 0;
+    for (int i = 0; i < sizeof(array); i ++) {
+        if (str == array[i]) {
+            contain = TRUE;
+        }
     }
+    return contain;
+}
+
+void new_function_read_card(){
+    Bool bad_card = 0;
+    int card_count = 0;
+    Bool duplicate = 0;
     
-    while (cards_read < NUM_CARDS) {
+    while (card_count < NUM_CARDS) {
         bad_card = FALSE;
+        duplicate = FALSE;
         
         printf("Enter a card:");
-        
-        rank_ch = getchar();
-        switch (rank_ch) {
-            case '0':
-                exit(EXIT_SUCCESS);
-            case '2':
-                rank = 0;
-                break;
-            case '3':
-                rank = 1;
-                break;
-            case '4':
-                rank = 2;
-                break;
-            case '5':
-                rank = 3;
-                break;
-            case '6':
-                rank = 4;
-                break;
-            case '7':
-                rank = 5;
-                break;
-            case '8':
-                rank = 6;
-                break;
-            case '9':
-                rank = 7;
-                break;
-            case 't': case 'T':
-                rank = 8;
-                break;
-            case 'j': case 'J':
-                rank = 9;
-                break;
-            case 'q': case 'Q':
-                rank = 10;
-                break;
-            case 'k': case 'K':
-                rank = 11;
-                break;
-            case 'a': case 'A':
-                rank = 12;
-                break;
-                
-            default: bad_card = TRUE;
-                break;
-        }
-        suit_ch = getchar();
-        switch (suit_ch) {
-            case 'c': case 'C':
-                suit = 0;
-                break;
-            case 'd': case 'D':
-                suit = 1;
-                break;
-            case 'h': case'H':
-                suit = 2;
-                break;
-            case 's': case 'S':
-                suit = 3;
-                break;
-            default:
-                bad_card = TRUE;
-                break;
+    
+        char number = getchar();
+        char suit = getchar();
+        if (rankIsInArray(number) && suitIsInArray(suit)) {
+            card_in_hands[card_count][0] = number;
+            card_in_hands[card_count][1] = suit;
+        }else{
+            bad_card = TRUE;
         }
         
+        char ch;
         while ((ch = getchar()) != '\n') {
-            if (ch != ' ') {
+            if (ch == ' ') {
                 bad_card = TRUE;
+            }
+        }
+        
+        for (int i = 0; i < card_count; i ++) {
+            if ((card_in_hands[i][0] == card_in_hands[card_count][0]) && (card_in_hands[i][1] == card_in_hands[card_count][1])) {
+                duplicate = TRUE;
             }
         }
         
         if (bad_card) {
             printf("Bad card; ignored.\n");
-        }else if (card_exists[rank][suit]){
+        }else if(duplicate){
             printf("Duplicate card; ignored.\n");
         }else{
-            num_in_rank[rank]++;
-            num_in_suit[suit]++;
-            card_exists[rank][suit] = TRUE;
-            cards_read++;
+            card_count ++;
         }
     }
 }
 
-void analyze_hand(void){
-    int num_consec = 0;
-    int rank, suit;
+Bool allEqual(char a,char b,char c, char d,char f){
+    return ((a == b) && (a == c) && (a == d) && (a == f)) ? TRUE : FALSE;
+}
+
+int changeChar(char a){
+    if (( a == 't') || ( a == 'T')) {
+        return 10;
+    }else if (( a == 'j') || ( a == 'J')){
+        return 11;
+    }else if (( a == 'q') || ( a == 'Q')){
+        return 12;
+    }else if (( a == 'k') || ( a == 'K')){
+        return 13;
+    }else if (( a == 'a') || ( a == 'A')){
+        return 1;
+    }else{
+        return (int)(a-48);
+    }
+}
+
+void new_analyze_hand(char cards[NUM_CARDS][2]){
     straight = FALSE;
     flush = FALSE;
     four = FALSE;
     three = FALSE;
+    full_house = FALSE;
     pairs = 0;
     
-    for (suit = 0; suit < NUM_SUITS; suit ++) {
-        if (num_in_suit[suit] == NUM_CARDS) {
-            flush = TRUE;
+    if (allEqual(cards[0][1],cards[1][1],cards[2][1],cards[3][1],cards[4][1])) {
+        flush = TRUE;
+    }
+    
+    int count = 0;
+    for (int i = 0; i < NUM_CARDS; i ++) {
+        for (int j = 0; j < NUM_CARDS; j ++) {
+            if (i != j) {
+                if (cards[i][0] == cards[j][0]) {
+                    count ++;
+                }
+            }
         }
     }
     
-    rank = 0;
-    while (num_in_rank[rank] == 0) {
-        rank ++;
+    if (count == 2) {
+        pairs = 1;
+    }else if (count == 4){
+        pairs = 2;
+    }else if (count == 6){
+        three = TRUE;
+    }else if (count == 12){
+        four = TRUE;
+    }else if (count == 8){
+        full_house = TRUE;
     }
-    for (; rank < NUM_RANKS && num_in_rank[rank]; rank ++) {
-        num_consec++;
-    }
-    if (num_consec == NUM_CARDS) {
-        straight = TRUE;
-        return;
+
+    int cardNumber[NUM_CARDS];
+    int addNumber = 0;
+    for (int i = 0; i < NUM_CARDS; i ++) {
+        cardNumber[i] = changeChar(cards[i][0]);
+        addNumber += cardNumber[i];
     }
     
-    for (rank = 0; rank < NUM_RANKS; rank ++) {
-        if (num_in_rank[rank] == 4) {
-            four = TRUE;
-        }
-        if (num_in_rank[rank] == 3) {
-            three = TRUE;
-        }
-        if (num_in_rank[rank] == 2) {
-            pairs++;
+    for (int i = 0; i < sizeof(cardNumber); i ++) {
+        if (cardNumber[i] != 0) {
+            if ((addNumber/cardNumber[i]) == NUM_CARDS) {
+                straight = TRUE;
+            }
         }
     }
 }
