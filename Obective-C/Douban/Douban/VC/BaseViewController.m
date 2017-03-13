@@ -6,23 +6,20 @@
 //  Copyright © 2017年 wuzhuoMunin. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "DBNetWorking.h"
+#import "BaseViewController.h"
 
-@interface ViewController ()
+@interface BaseViewController ()
 
 @end
 
-@implementation ViewController
+@implementation BaseViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    [[DBNetWorking share]getDataWithURl:@"https://api.douban.com/v2/book/search?q=%22%E7%88%B1%E4%BD%A0%22" method:@"get" param:nil result:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-//        NSLog(@"data = %@ response = %@ error = %@",data,response,error);
-        NSLog(@"===>%@",dic);
-    }];
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    
 }
 
 /*
