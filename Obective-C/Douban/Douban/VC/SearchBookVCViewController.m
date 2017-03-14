@@ -30,6 +30,7 @@
     
     //考虑异步去执行
     [self dataRefresh];
+
 }
 
 #pragma mark - privateMethod
@@ -45,8 +46,6 @@
 - (void)viewDidLayoutSubviews{
     _resultTableView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 }
-
-#pragma mark - tableViewDelegate
 
 #pragma mark - getters
 
