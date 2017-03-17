@@ -13,5 +13,7 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
 #define doubanGreen [UIColor colorWithRed:128/255.f green:215/255.f blue:63/255.f alpha:1.00f]
+#define RBGColor(r,g,b,a) [UIColor colorWithRed:r/255.f green:g/255.f blue:b/255.f alpha:a/255.f] 
+
 
 #endif /* AppConfig_pch */
