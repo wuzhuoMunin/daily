@@ -38,13 +38,16 @@ int main(int argc, const char * argv[]) {
 //    swap(&i, &j);
 //    printf("%d,%d",i,j);
     
-    int largest,second_largest;
-    int b[10] = {22222,31,54,623,12,35,6666,843,234,12};
-    
-    find_two_largest(b, 10, &largest, &second_largest);
-    
-    printf("%d,%d",largest,second_largest);
-    
+//    int largest,second_largest;
+//    int b[10] = {22222,31,54,623,12,35,6666,843,234,12};
+//    
+//    find_two_largest(b, 10, &largest, &second_largest);
+//    
+//    printf("%d,%d",largest,second_largest);
+
+    int a[] = {5,12,53,34,23,55,62,14};
+    int *p = &a[1],*q = &a[5];
+    printf("%d,%p",*(p+3),p);
     return 0;
 }
 
